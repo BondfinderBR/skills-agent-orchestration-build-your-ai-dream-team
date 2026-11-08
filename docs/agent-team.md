@@ -1,12 +1,12 @@
 # Agent team
 
-I will use GitHub Copilot CLI in a Codespace to orchestrate this team to plan, design, build, and validate Mona's Project Pulse dashboard.
+I will use a custom GitHub Copilot CLI agent team in a Codespace to plan, design, build, and validate Mona's Project Pulse dashboard.
 
-| Agent | Model | Responsibility | Definition |
-| --- | --- | --- | --- |
-| Orchestrator | Claude Opus 5.5 | Coordinates the specialists, phases their work by file ownership and dependencies, integrates their results, and reports the outcome. | `.github/agents/orchestrator.agent.md` |
-| Planner | Claude Opus 5.5 | Researches the repository and produces an implementation plan with steps, ownership, dependencies, risks, and validation expectations. | `.github/agents/planner.agent.md` |
-| Designer | Gemini 3.7 Flash | Guides the dashboard's usability, accessibility, information hierarchy, responsive layout, and visual design. | `.github/agents/designer.agent.md` |
-| Coder | GPT-5.5 | Implements the assigned dashboard files and runnable-app support, then validates the implementation. | `.github/agents/coder.agent.md` |
+| Agent | Role | Contribution to the dashboard |
+| --- | --- | --- |
+| Orchestrator | Coordinates the work and keeps the specialists aligned | Breaks the project into phases, delegates work by file ownership, checks dependencies, and integrates each result before reporting the outcome. |
+| Planner | Builds the implementation strategy | Reviews the repo, identifies the workstreams, estimates dependencies and risks, and defines the step-by-step plan for the dashboard build. |
+| Designer | Shapes the experience and visual design | Guides layout, accessibility, project-card hierarchy, status treatment, spacing, and the overall polished dashboard look. |
+| Coder | Implements the app and validates it | Creates the static dashboard files and any required launch support so the Project Pulse UI can open reliably in VS Code. |
 
-The Orchestrator will involve the Planner before implementation, then coordinate the Designer and Coder so design and coding work fit together. The dashboard will present project names, owners, status, recent activity, priority, and contributor-friendly summaries.
+The workflow is intentionally staged: the Planner defines the roadmap, the Designer improves the experience and information flow, and the Coder turns the approved approach into the final HTML, CSS, and JSON. The Orchestrator keeps those specialist tasks coordinated so Mona's team gets a clear, contributor-friendly Project Pulse dashboard.
