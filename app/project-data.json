@@ -1,0 +1,39 @@
+{
+  "projects": [
+    {
+      "name": "Community Portal",
+      "owner": "Maya Chen",
+      "status": "On track",
+      "recentActivity": "Contributor onboarding flow approved; implementation is ready to begin.",
+      "priority": "High"
+    },
+    {
+      "name": "API Reliability",
+      "owner": "Jordan Lee",
+      "status": "At risk",
+      "recentActivity": "Load-test results surfaced a timeout on the busiest endpoint.",
+      "priority": "High"
+    },
+    {
+      "name": "Mobile Refresh",
+      "owner": "Ari Patel",
+      "status": "In progress",
+      "recentActivity": "The updated navigation prototype is available for team review.",
+      "priority": "Medium"
+    },
+    {
+      "name": "Data Explorer",
+      "owner": "Sam Rivera",
+      "status": "Needs attention",
+      "recentActivity": "The data import is waiting on a decision about the source format.",
+      "priority": "Medium"
+    },
+    {
+      "name": "Docs Spring Clean",
+      "owner": "Taylor Brooks",
+      "status": "Planning",
+      "recentActivity": "The team collected the first list of pages to refresh.",
+      "priority": "Low"
+    }
+  ]
+}

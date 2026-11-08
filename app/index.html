@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f4f7fb">
+    <title>Project Pulse</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#main" aria-label="Project Pulse home">
+        <span class="brand-mark" aria-hidden="true">P</span>
+        <span>Project Pulse</span>
+      </a>
+      <span class="header-note">Team workspace</span>
+    </header>
+
+    <main class="page-shell" id="main">
+      <section class="page-intro" aria-labelledby="page-title">
+        <p class="eyebrow">PROJECT OVERVIEW</p>
+        <div class="intro-row">
+          <div>
+            <h1 id="page-title">A pulse check for the work in motion.</h1>
+            <p class="intro-copy">See who owns each project, what changed recently, and where contributors can help next.</p>
+          </div>
+          <div class="project-count" aria-live="polite">
+            <span class="count-value" id="project-count">—</span>
+            <span class="count-label">projects</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="dashboard-section" aria-labelledby="projects-heading">
+        <div class="section-heading">
+          <div>
+            <h2 id="projects-heading">All projects</h2>
+            <p class="section-copy">A clear snapshot for the whole team.</p>
+          </div>
+          <span class="section-caption">Latest team updates</span>
+        </div>
+        <div class="dashboard" id="project-list" aria-live="polite" aria-busy="true">
+          <p class="loading-message">Loading project updates…</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Shared context helps everyone move the work forward.</p>
+    </footer>
+
+    <script>
+      const projectList = document.querySelector("#project-list");
+      const projectCount = document.querySelector("#project-count");
+
+      function createField(label, value, className) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "project-field";
+
+        const fieldLabel = document.createElement("dt");
+        fieldLabel.textContent = label;
+        const fieldValue = document.createElement("dd");
+        if (className) {
+          fieldValue.className = className;
+          if (className === "status-value") {
+            fieldValue.dataset.status = value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+          } else if (className === "priority-value") {
+            fieldValue.dataset.priority = value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+          }
+        }
+        fieldValue.textContent = value;
+
+        wrapper.append(fieldLabel, fieldValue);
+        return wrapper;
+      }
+
+      function createProjectCard(project, index) {
+        const card = document.createElement("article");
+        card.className = "project-card";
+        card.setAttribute("aria-labelledby", `project-title-${index}`);
+
+        const top = document.createElement("div");
+        top.className = "card-top";
+        const heading = document.createElement("h3");
+        heading.className = "project-name";
+        heading.id = `project-title-${index}`;
+        heading.textContent = project.name;
+        const owner = document.createElement("p");
+        owner.className = "project-owner";
+        owner.textContent = `Owned by ${project.owner}`;
+        top.append(heading, owner);
+
+        const details = document.createElement("dl");
+        details.className = "project-details";
+        details.append(
+          createField("Status", project.status, "status-value"),
+          createField("Priority", project.priority, "priority-value"),
+          createField("Recent activity", project.recentActivity, "activity-value")
+        );
+
+        const summary = document.createElement("p");
+        summary.className = "contributor-summary";
+        const summaryLabel = document.createElement("span");
+        summaryLabel.className = "summary-label";
+        summaryLabel.textContent = "Contributor brief";
+        const summaryText = document.createElement("span");
+        summaryText.textContent = `Start with ${project.owner}’s latest update, then check whether follow-up is needed given the ${project.priority.toLowerCase()} priority.`;
+        summary.append(summaryLabel, summaryText);
+
+        card.append(top, details, summary);
+        return card;
+      }
+
+      async function loadProjects() {
+        try {
+          const response = await fetch("project-data.json");
+          if (!response.ok) {
+            throw new Error(`Project data request failed (${response.status}).`);
+          }
+
+          const data = await response.json();
+          if (!data || !Array.isArray(data.projects)) {
+            throw new Error("Project data must contain a projects array.");
+          }
+
+          projectCount.textContent = data.projects.length;
+          projectList.replaceChildren();
+          if (data.projects.length === 0) {
+            const emptyMessage = document.createElement("p");
+            emptyMessage.className = "loading-message";
+            emptyMessage.textContent = "No projects to show yet.";
+            projectList.append(emptyMessage);
+          } else {
+            data.projects.forEach((project, index) => {
+              projectList.append(createProjectCard(project, index));
+            });
+          }
+        } catch (error) {
+          const errorMessage = document.createElement("p");
+          errorMessage.className = "error-message";
+          errorMessage.setAttribute("role", "alert");
+          errorMessage.textContent = "Project updates could not be loaded. Please try again when the dashboard is served over HTTP.";
+          projectList.replaceChildren(errorMessage);
+          console.error(error);
+        } finally {
+          projectList.setAttribute("aria-busy", "false");
+        }
+      }
+
+      loadProjects();
+    </script>
+  </body>
+</html>
